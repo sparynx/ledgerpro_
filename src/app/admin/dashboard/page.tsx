@@ -76,12 +76,10 @@ export default function AdminDashboard() {
       try {
         setTimelineLoading(true);
         const res = await fetch('/api/receipts');
-        if (res.ok) {
-          const data = await res.json();
-          setRecentReceipts(Array.isArray(data) ? data.slice(0, 20) : []);
-        } else {
-          setRecentReceipts([]);
-        }
+        if (!res.ok) return;
+        const receipts = await res.json();
+        const data = Array.isArray(receipts) ? receipts : [];
+        setRecentReceipts(data.slice(0, 20));
       } finally {
         setTimelineLoading(false);
       }
@@ -92,22 +90,25 @@ export default function AdminDashboard() {
     <AdminProtectedRoute>
       <div className="min-h-screen bg-gray-50">
         {/* <AdminNavbar hideTitle hideProfile /> */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+          <div className="mb-8 space-y-4">
+            {/* Header */}
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Admin Dashboard</h1>
               <p className="text-gray-600">Manage CDS finances and members</p>
             </div>
-            <div className="flex w-full sm:w-auto items-center gap-2">
-              {/* Compact search inline with exports */}
-              <div className="relative flex-1 sm:flex-initial w-full sm:w-72">
+            
+            {/* Search and Export Row */}
+            <div className="flex flex-col sm:flex-row gap-3">
+              {/* Search Bar - Full width on mobile, constrained on desktop */}
+              <div className="relative flex-1 min-w-0">
                 <input
                   type="text"
                   value={stateCodeQuery}
                   onChange={(e) => setStateCodeQuery(e.target.value)}
                   onKeyDown={(e) => { if (e.key === 'Enter') searchUsers(); }}
-                  placeholder="Search state code..."
-                  className="w-full pr-20 pl-3 py-2 rounded-md border border-gray-300 text-sm text-gray-600 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Search by state code..."
+                  className="w-full pr-20 pl-3 py-2.5 rounded-md border border-gray-300 text-sm text-gray-600 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
                 <button
                   onClick={searchUsers}
@@ -117,31 +118,33 @@ export default function AdminDashboard() {
                   {searching ? 'Go...' : 'Search'}
                 </button>
               </div>
-              <div className="flex gap-2">
+              
+              {/* Export Button - Full width on mobile, auto width on desktop */}
+              <div className="w-full sm:w-auto">
                 <ExportReportButton small />
               </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <div className="bg-white rounded-lg shadow p-6">
-              <h3 className="text-lg font-semibold text-gray-900">Total Contributions</h3>
-              <p className="text-3xl font-bold text-blue-700">₦{stats.totalContributions.toLocaleString()}</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
+            <div className="bg-white rounded-lg shadow p-4 sm:p-6">
+              <h3 className="text-base sm:text-lg font-semibold text-gray-900">Total Contributions</h3>
+              <p className="text-2xl sm:text-3xl font-bold text-blue-700">₦{stats.totalContributions.toLocaleString()}</p>
               <p className="text-sm text-gray-500">This month</p>
             </div>
-            <div className="bg-white rounded-lg shadow p-6">
-              <h3 className="text-lg font-semibold text-gray-900">Total Expenses</h3>
-              <p className="text-3xl font-bold text-blue-700">₦{stats.totalExpenses.toLocaleString()}</p>
+            <div className="bg-white rounded-lg shadow p-4 sm:p-6">
+              <h3 className="text-base sm:text-lg font-semibold text-gray-900">Total Expenses</h3>
+              <p className="text-2xl sm:text-3xl font-bold text-blue-700">₦{stats.totalExpenses.toLocaleString()}</p>
               <p className="text-sm text-gray-500">This month</p>
             </div>
-            <div className="bg-white rounded-lg shadow p-6">
-              <h3 className="text-lg font-semibold text-gray-900">Active Members</h3>
-              <p className="text-3xl font-bold text-blue-700">{stats.activeMembers}</p>
+            <div className="bg-white rounded-lg shadow p-4 sm:p-6">
+              <h3 className="text-base sm:text-lg font-semibold text-gray-900">Active Members</h3>
+              <p className="text-2xl sm:text-3xl font-bold text-blue-700">{stats.activeMembers}</p>
               <p className="text-sm text-gray-500">Current members</p>
             </div>
-            <div className="bg-white rounded-lg shadow p-6">
-              <h3 className="text-lg font-semibold text-gray-900">Pending Receipts</h3>
-              <p className="text-3xl font-bold text-blue-700">{stats.pendingReceipts}</p>
+            <div className="bg-white rounded-lg shadow p-4 sm:p-6">
+              <h3 className="text-base sm:text-lg font-semibold text-gray-900">Pending Receipts</h3>
+              <p className="text-2xl sm:text-3xl font-bold text-blue-700">{stats.pendingReceipts}</p>
               <p className="text-sm text-gray-500">Awaiting approval</p>
             </div>
           </div>
@@ -150,28 +153,30 @@ export default function AdminDashboard() {
             <div className="mb-4 text-sm text-red-600">{searchError}</div>
           )}
 
-          {/* Results: names only linking to profile */}
+          {/* Search Results - Mobile responsive */}
           {results.length > 0 && (
-            <div className="mb-10 bg-white rounded-lg shadow p-6">
+            <div className="mb-8 bg-white rounded-lg shadow p-4 sm:p-6">
               <h4 className="text-lg font-semibold text-gray-900 mb-3">Search Results</h4>
               <ul className="divide-y divide-gray-200">
                 {results.map((u) => (
                   <li key={u.id} className="py-3">
-                    <Link href={`/admin/members/${u.id}`} className="text-blue-700 hover:text-blue-800 font-medium">
-                      {u.displayName || u.username || u.email}
-                    </Link>
-                    {u.stateCode && (
-                      <span className="ml-2 text-sm text-gray-500">({u.stateCode})</span>
-                    )}
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                      <Link href={`/admin/members/${u.id}`} className="text-blue-700 hover:text-blue-800 font-medium truncate">
+                        {u.displayName || u.username || u.email}
+                      </Link>
+                      {u.stateCode && (
+                        <span className="text-sm text-gray-500 sm:ml-2">({u.stateCode})</span>
+                      )}
+                    </div>
                   </li>
                 ))}
               </ul>
             </div>
           )}
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <div className="bg-white rounded-lg shadow p-6">
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">Quick Actions</h3>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
+            <div className="bg-white rounded-lg shadow p-4 sm:p-6">
+              <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4">Quick Actions</h3>
               <div className="space-y-3">
                 <a href="/admin/contributions/new" className="block w-full text-left px-4 py-3 text-sm font-medium text-gray-700 bg-gray-50 rounded-md hover:bg-gray-100">
                   Add New Contribution
@@ -190,9 +195,9 @@ export default function AdminDashboard() {
                 </Link>
               </div>
             </div>
-            <div className="bg-white rounded-lg shadow p-6">
+            <div className="bg-white rounded-lg shadow p-4 sm:p-6">
               <div className="flex items-center justify-between mb-2">
-                <h3 className="text-xl font-semibold text-gray-900">Recent Activity</h3>
+                <h3 className="text-lg sm:text-xl font-semibold text-gray-900">Recent Activity</h3>
                 <button
                   onClick={toggleTimeline}
                   className="text-sm px-3 py-1.5 rounded-md border border-gray-300 text-gray-700 hover:bg-gray-50"
