@@ -92,42 +92,41 @@ export default function AdminDashboard() {
         {/* <AdminNavbar hideTitle hideProfile /> */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
           <div className="mb-8 space-y-4">
-            {/* Header */}
-            <div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Admin Dashboard</h1>
-              <p className="text-gray-600">Manage CDS finances and members</p>
-            </div>
-            
-            {/* Search and Export Row */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-              {/* Search Bar - Full width on mobile, compact on desktop */}
-              <div className="relative w-full sm:w-auto sm:max-w-md lg:max-w-lg">
-                <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-                  {/* Search Icon */}
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4">
-                    <path fillRule="evenodd" d="M10.5 3.75a6.75 6.75 0 1 0 4.243 11.94l4.784 4.783a.75.75 0 1 0 1.06-1.06l-4.783-4.784A6.75 6.75 0 0 0 10.5 3.75Zm-5.25 6.75a5.25 5.25 0 1 1 10.5 0 5.25 5.25 0 0 1-10.5 0Z" clipRule="evenodd" />
-                  </svg>
-                </span>
-                <input
-                  type="text"
-                  value={stateCodeQuery}
-                  onChange={(e) => setStateCodeQuery(e.target.value)}
-                  onKeyDown={(e) => { if (e.key === 'Enter') searchUsers(); }}
-                  placeholder="Search by state code..."
-                  className="w-full pr-28 pl-10 py-2.5 rounded-xl border border-gray-200 bg-white/80 backdrop-blur text-sm text-gray-700 placeholder-gray-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-                />
-                <button
-                  onClick={searchUsers}
-                  disabled={searching}
-                  className={`absolute right-1 top-1/2 -translate-y-1/2 px-3.5 py-1.5 rounded-lg text-white text-sm font-medium shadow-sm transition ${searching ? 'bg-blue-400' : 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700'}`}
-                >
-                  {searching ? 'Go...' : 'Search'}
-                </button>
+            {/* Header + Controls (responsive) */}
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+              <div>
+                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Admin Dashboard</h1>
+                <p className="text-gray-600">Manage CDS finances and members</p>
               </div>
-
-              {/* Export Button - Full width on mobile, auto width on desktop */}
-              <div className="w-full sm:w-auto">
-                <ExportReportButton small />
+              <div className="flex w-full sm:w-auto items-stretch sm:items-center gap-3">
+                {/* Search Bar - Full width on mobile, compact on desktop */}
+                <div className="relative w-full sm:w-72">
+                  <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                    {/* Search Icon */}
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4">
+                      <path fillRule="evenodd" d="M10.5 3.75a6.75 6.75 0 1 0 4.243 11.94l4.784 4.783a.75.75 0 1 0 1.06-1.06l-4.783-4.784A6.75 6.75 0 0 0 10.5 3.75Zm-5.25 6.75a5.25 5.25 0 1 1 10.5 0 5.25 5.25 0 0 1-10.5 0Z" clipRule="evenodd" />
+                    </svg>
+                  </span>
+                  <input
+                    type="text"
+                    value={stateCodeQuery}
+                    onChange={(e) => setStateCodeQuery(e.target.value)}
+                    onKeyDown={(e) => { if (e.key === 'Enter') searchUsers(); }}
+                    placeholder="Search by state code..."
+                    className="w-full pr-28 pl-10 py-2.5 rounded-xl border border-gray-200 bg-white/80 backdrop-blur text-sm text-gray-700 placeholder-gray-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                  />
+                  <button
+                    onClick={searchUsers}
+                    disabled={searching}
+                    className={`absolute right-1 top-1/2 -translate-y-1/2 px-3.5 py-1.5 rounded-lg text-white text-sm font-medium shadow-sm transition ${searching ? 'bg-blue-400' : 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700'}`}
+                  >
+                    {searching ? 'Go...' : 'Search'}
+                  </button>
+                </div>
+                {/* Export Button - Full width on mobile, auto on desktop */}
+                <div className="w-full sm:w-auto">
+                  <ExportReportButton small />
+                </div>
               </div>
             </div>
           </div>

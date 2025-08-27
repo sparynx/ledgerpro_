@@ -18,6 +18,10 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "CDS LedgerPro",
   description: "Financial management system for CDS",
+  themeColor: {
+    media: "(prefers-color-scheme: light)",
+    color: "#1d4ed8", // blue-700
+  },
 };
 
 export default function RootLayout({
