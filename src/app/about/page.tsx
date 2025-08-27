@@ -17,7 +17,14 @@ const AboutPage = () => {
     contactPage: "/contact"
   };
 
-  const ContactLink = ({ href, icon: Icon, children, external = false }) => (
+  type ContactLinkProps = {
+    href: string;
+    icon: React.ComponentType<{ className?: string }>;
+    children: React.ReactNode;
+    external?: boolean;
+  };
+
+  const ContactLink: React.FC<ContactLinkProps> = ({ href, icon: Icon, children, external = false }) => (
     <a
       href={href}
       target={external ? "_blank" : undefined}
@@ -30,7 +37,13 @@ const AboutPage = () => {
     </a>
   );
 
-  const Section = ({ title, children, className = "" }) => (
+  type SectionProps = {
+    title: string;
+    children: React.ReactNode;
+    className?: string;
+  };
+
+  const Section: React.FC<SectionProps> = ({ title, children, className = "" }) => (
     <div className={`space-y-3 ${className}`}>
       <h2 className="text-xl font-semibold text-gray-900 border-b border-gray-200 pb-2">
         {title}
@@ -63,6 +76,37 @@ const AboutPage = () => {
                   <span className="font-semibold text-blue-600">{aboutConfig.project.name}</span>{' '}
                   {aboutConfig.project.description.replace(aboutConfig.project.name, '').trim()}
                 </p>
+              </Section>
+
+              {/* Support / Donation */}
+              <Section title="Support the Project">
+                <div className="space-y-4">
+                  <p className="text-lg">
+                    LedgerPro is built for transparency and community impact. Your support helps us keep servers running, ship new features faster, and provide a reliable tool for CDS groups across the country.
+                  </p>
+                  <ul className="list-disc pl-5 space-y-1 text-gray-700">
+                    <li>Keep the platform fast, secure, and ad‑free</li>
+                    <li>Fund new features requested by the community</li>
+                    <li>Support ongoing maintenance and sustainability</li>
+                  </ul>
+                  <div className="mt-3">
+                    <a
+                      href="https://wa.me/2349059543322?text=Hi%20LedgerPro%2C%20I%20would%20like%20to%20support%20the%20project."
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-3 px-4 py-3 rounded-lg bg-green-500 hover:bg-green-600 text-white font-medium shadow-sm transition-colors w-full sm:w-auto justify-center"
+                      aria-label="Message on WhatsApp to support LedgerPro"
+                    >
+                      {/* WhatsApp Icon */}
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+                        <path d="M20.52 3.48A11.94 11.94 0 0 0 12.06 0c-6.63.03-12 5.4-12 12.03 0 2.12.55 4.19 1.6 6.02L0 24l6.1-1.6a12 12 0 0 0 5.9 1.56h.01c6.63 0 12-5.37 12.03-12a11.94 11.94 0 0 0-3.52-8.48ZM12 21.06c-1.9 0-3.74-.5-5.36-1.46l-.38-.23-3.62.95.97-3.53-.25-.39A9.07 9.07 0 0 1 2.94 12C2.92 7.5 6.55 3.88 11.05 3.86h.02c2.41 0 4.67.94 6.37 2.64a9.02 9.02 0 0 1 2.66 6.38c-.02 4.5-3.66 8.18-8.1 8.18Zm4.73-6.06c-.26-.13-1.54-.76-1.78-.84-.24-.09-.41-.13-.58.13-.17.25-.66.83-.81 1-.15.17-.3.2-.56.07-.26-.13-1.1-.41-2.1-1.3-.78-.69-1.3-1.53-1.45-1.79-.15-.26-.02-.4.11-.53.12-.12.26-.33.39-.5.13-.17.17-.3.26-.5.09-.2.04-.38-.02-.53-.07-.13-.58-1.4-.8-1.92-.21-.51-.42-.44-.58-.45h-.5c-.17 0-.45.06-.68.33-.24.26-.9.88-.9 2.14 0 1.26.92 2.48 1.05 2.65.13.17 1.82 2.78 4.4 3.9.62.27 1.11.43 1.49.55.63.2 1.2.17 1.65.1.5-.07 1.54-.63 1.76-1.24.22-.61.22-1.13.15-1.24-.06-.11-.23-.17-.49-.3Z" />
+                      </svg>
+                      <span>Message on WhatsApp</span>
+                      <span className="ml-1 text-white/80 text-sm">(0905****322)</span>
+                    </a>
+                    <p className="mt-2 text-xs text-gray-500">We appreciate any contribution — thank you for helping keep LedgerPro sustainable.</p>
+                  </div>
+                </div>
               </Section>
 
               {/* Creator */}
