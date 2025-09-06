@@ -26,6 +26,9 @@ model User {
   // Relations
   receipts Receipt[]
   expenses Expense[]
+  contributions Contribution[]
+  pastContributions PastContribution[]
+  emailReminders EmailReminder[]
 
   @@map("users")
 }
@@ -37,11 +40,13 @@ model Contribution {
   amount      Decimal  @db.Decimal(10, 2)
   dueDate     DateTime
   isActive    Boolean  @default(true)
+  userId      String?  // Optional - null means global contribution for all users
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
   // Relations
   receipts Receipt[]
+  user     User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("contributions")
 }
@@ -80,6 +85,38 @@ model Expense {
   user User @relation(fields: [createdBy], references: [id], onDelete: Cascade)
 
   @@map("expenses")
+}
+
+model PastContribution {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  amount      Decimal  @db.Decimal(10, 2)
+  dueDate     DateTime
+  userId      String?  // Optional - null means global contribution for all users
+  originalId  String   // Reference to the original contribution ID
+  archivedAt  DateTime @default(now())
+  createdAt   DateTime // Original creation date
+
+  // Relations
+  user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("past_contributions")
+}
+
+model EmailReminder {
+  id          String   @id @default(cuid())
+  userId      String
+  emailType   String   // 'reminder', 'welcome', etc.
+  sentAt      DateTime @default(now())
+  status      String   // 'sent', 'failed', 'bounced'
+  errorMessage String?
+  nextReminder DateTime? // When to send next reminder
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("email_reminders")
 }
 
 enum ReceiptStatus {

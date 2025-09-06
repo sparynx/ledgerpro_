@@ -13,6 +13,7 @@ export default function AdminDashboard() {
     totalExpenses: 0,
     activeMembers: 0,
     pendingReceipts: 0,
+    availableContributions: 0,
   });
   const [loading, setLoading] = useState(true);
   const [stateCodeQuery, setStateCodeQuery] = useState('');
@@ -22,6 +23,8 @@ export default function AdminDashboard() {
   const [timelineOpen, setTimelineOpen] = useState(false);
   const [recentReceipts, setRecentReceipts] = useState<any[] | null>(null);
   const [timelineLoading, setTimelineLoading] = useState(false);
+  const [archiving, setArchiving] = useState(false);
+  const [sendingEmails, setSendingEmails] = useState(false);
 
   useEffect(() => {
     fetchStats();
@@ -37,6 +40,7 @@ export default function AdminDashboard() {
           totalExpenses: data.totalExpenses || 0,
           activeMembers: data.activeMembers || 0,
           pendingReceipts: data.pendingReceipts || 0,
+          availableContributions: (data.totalContributions || 0) - (data.totalExpenses || 0),
         });
       }
     } finally {
@@ -86,6 +90,48 @@ export default function AdminDashboard() {
     }
   };
 
+  const archiveExpiredContributions = async () => {
+    try {
+      setArchiving(true);
+      const res = await fetch('/api/archive-expired', {
+        method: 'POST',
+      });
+      
+      if (res.ok) {
+        const result = await res.json();
+        alert(`Archived ${result.archived} contributions and deleted ${result.deleted} empty contributions.`);
+        // Refresh stats
+        fetchStats();
+      } else {
+        alert('Failed to archive expired contributions');
+      }
+    } catch (error) {
+      alert('Error archiving expired contributions');
+    } finally {
+      setArchiving(false);
+    }
+  };
+
+  const sendReminderEmails = async () => {
+    try {
+      setSendingEmails(true);
+      const res = await fetch('/api/send-reminders', {
+        method: 'POST',
+      });
+      
+      if (res.ok) {
+        const result = await res.json();
+        alert(`Reminder emails sent successfully!\n\nSent: ${result.sent}\nFailed: ${result.failed}\nUsers with pending contributions: ${result.usersWithPendingContributions}`);
+      } else {
+        alert('Failed to send reminder emails');
+      }
+    } catch (error) {
+      alert('Error sending reminder emails');
+    } finally {
+      setSendingEmails(false);
+    }
+  };
+
   return (
     <AdminProtectedRoute>
       <div className="min-h-screen bg-gray-50">
@@ -131,7 +177,7 @@ export default function AdminDashboard() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-6 mb-8">
             <div className="bg-white rounded-lg shadow p-4 sm:p-6">
               <h3 className="text-base sm:text-lg font-semibold text-gray-900">Total Contributions</h3>
               <p className="text-2xl sm:text-3xl font-bold text-blue-700">₦{stats.totalContributions.toLocaleString()}</p>
@@ -139,8 +185,13 @@ export default function AdminDashboard() {
             </div>
             <div className="bg-white rounded-lg shadow p-4 sm:p-6">
               <h3 className="text-base sm:text-lg font-semibold text-gray-900">Total Expenses</h3>
-              <p className="text-2xl sm:text-3xl font-bold text-blue-700">₦{stats.totalExpenses.toLocaleString()}</p>
+              <p className="text-2xl sm:text-3xl font-bold text-red-600">₦{stats.totalExpenses.toLocaleString()}</p>
               <p className="text-sm text-gray-500">This month</p>
+            </div>
+            <div className="bg-white rounded-lg shadow p-4 sm:p-6">
+              <h3 className="text-base sm:text-lg font-semibold text-gray-900">Available Funds</h3>
+              <p className="text-2xl sm:text-3xl font-bold text-green-600">₦{stats.availableContributions.toLocaleString()}</p>
+              <p className="text-sm text-gray-500">Contributions - Expenses</p>
             </div>
             <div className="bg-white rounded-lg shadow p-4 sm:p-6">
               <h3 className="text-base sm:text-lg font-semibold text-gray-900">Active Members</h3>
@@ -149,7 +200,7 @@ export default function AdminDashboard() {
             </div>
             <div className="bg-white rounded-lg shadow p-4 sm:p-6">
               <h3 className="text-base sm:text-lg font-semibold text-gray-900">Pending Receipts</h3>
-              <p className="text-2xl sm:text-3xl font-bold text-blue-700">{stats.pendingReceipts}</p>
+              <p className="text-2xl sm:text-3xl font-bold text-yellow-600">{stats.pendingReceipts}</p>
               <p className="text-sm text-gray-500">Awaiting approval</p>
             </div>
           </div>
@@ -198,6 +249,29 @@ export default function AdminDashboard() {
                 <Link href="/admin/members" className="block w-full text-left px-4 py-3 text-sm font-medium text-gray-700 bg-gray-50 rounded-md hover:bg-gray-100">
                   Manage Members
                 </Link>
+                <Link href="/admin/contributors" className="block w-full text-left px-4 py-3 text-sm font-medium text-green-700 bg-green-50 rounded-md hover:bg-green-100">
+                  View Contributors
+                </Link>
+                <Link href="/admin/cash-contributions" className="block w-full text-left px-4 py-3 text-sm font-medium text-purple-700 bg-purple-50 rounded-md hover:bg-purple-100">
+                  Record Cash Payment
+                </Link>
+                <Link href="/admin/past-contributions" className="block w-full text-left px-4 py-3 text-sm font-medium text-gray-700 bg-gray-50 rounded-md hover:bg-gray-100">
+                  View Past Contributions
+                </Link>
+                <button
+                  onClick={archiveExpiredContributions}
+                  disabled={archiving}
+                  className="block w-full text-left px-4 py-3 text-sm font-medium text-orange-700 bg-orange-50 rounded-md hover:bg-orange-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {archiving ? 'Archiving...' : 'Archive Expired Contributions'}
+                </button>
+                <button
+                  onClick={sendReminderEmails}
+                  disabled={sendingEmails}
+                  className="block w-full text-left px-4 py-3 text-sm font-medium text-blue-700 bg-blue-50 rounded-md hover:bg-blue-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {sendingEmails ? 'Sending Emails...' : '📧 Send Reminder Emails'}
+                </button>
               </div>
             </div>
             <div className="bg-white rounded-lg shadow p-4 sm:p-6">

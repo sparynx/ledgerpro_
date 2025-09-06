@@ -22,11 +22,19 @@ export default function ContributionsList() {
 
   useEffect(() => {
     fetchContributions();
-  }, []);
+  }, [user?.uid]);
 
   const fetchContributions = async () => {
     try {
-      const response = await fetch('/api/contributions');
+      const url = user?.uid 
+        ? `/api/contributions?firebaseUid=${encodeURIComponent(user.uid)}&t=${Date.now()}`
+        : `/api/contributions?t=${Date.now()}`;
+      const response = await fetch(url, {
+        cache: 'no-store',
+        headers: {
+          'Cache-Control': 'no-cache'
+        }
+      });
       if (response.ok) {
         const data = await response.json();
         setContributions(data);
@@ -43,7 +51,12 @@ export default function ContributionsList() {
   useEffect(() => {
     const fetchUserReceipts = async (firebaseUid: string) => {
       try {
-        const response = await fetch(`/api/receipts?firebaseUid=${encodeURIComponent(firebaseUid)}`);
+        const response = await fetch(`/api/receipts?firebaseUid=${encodeURIComponent(firebaseUid)}&t=${Date.now()}`, {
+          cache: 'no-store',
+          headers: {
+            'Cache-Control': 'no-cache'
+          }
+        });
         if (!response.ok) return;
         const receipts = await response.json();
         const ids = new Set<string>(

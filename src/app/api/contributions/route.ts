@@ -3,10 +3,34 @@ import { PrismaClient, Prisma } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-export async function GET() {
+export async function GET(req: Request) {
   try {
+    const { searchParams } = new URL(req.url);
+    const firebaseUid = searchParams.get("firebaseUid");
+    
+    let whereClause: any = { isActive: true };
+    
+    if (firebaseUid) {
+      // Find user by firebaseUid
+      const user = await prisma.user.findUnique({ 
+        where: { firebaseUid },
+        select: { id: true }
+      });
+      
+      if (user) {
+        // Show global contributions (userId is null) AND user-specific contributions
+        whereClause = {
+          isActive: true,
+          OR: [
+            { userId: null }, // Global contributions for all users
+            { userId: user.id } // User-specific contributions
+          ]
+        };
+      }
+    }
+    
     const contributions = await prisma.contribution.findMany({
-      where: { isActive: true },
+      where: whereClause,
       orderBy: { createdAt: 'desc' },
     });
 

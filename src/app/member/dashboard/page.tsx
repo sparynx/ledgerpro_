@@ -32,7 +32,12 @@ export default function MemberDashboard() {
 
   const fetchDashboardData = async () => {
     try {
-      const res = await fetch(`/api/reports/dashboard?firebaseUid=${user?.uid}`);
+      const res = await fetch(`/api/reports/dashboard?firebaseUid=${user?.uid}&t=${Date.now()}`, {
+        cache: 'no-store',
+        headers: {
+          'Cache-Control': 'no-cache'
+        }
+      });
       if (res.ok) {
         const data = await res.json();
         setDashboardData({
@@ -57,7 +62,12 @@ export default function MemberDashboard() {
     if (next && recentReceipts === null && user?.uid && !timelineLoading) {
       try {
         setTimelineLoading(true);
-        const res = await fetch(`/api/receipts?firebaseUid=${encodeURIComponent(user.uid)}`);
+        const res = await fetch(`/api/receipts?firebaseUid=${encodeURIComponent(user.uid)}&t=${Date.now()}`, {
+          cache: 'no-store',
+          headers: {
+            'Cache-Control': 'no-cache'
+          }
+        });
         if (res.ok) {
           const data = await res.json();
           setRecentReceipts(Array.isArray(data) ? data.slice(0, 20) : []);

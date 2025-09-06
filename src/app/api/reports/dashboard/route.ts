@@ -47,9 +47,15 @@ export async function GET(req: Request) {
     _sum: { amount: true },
   });
   const totalPaid = Number(totalPaidResult._sum.amount || 0);
-  // Pending amount: sum of all active contributions minus total paid
+  // Pending amount: sum of user-specific contributions (global + user-specific) minus total paid
   const contributions = await prisma.contribution.findMany({
-    where: { isActive: true },
+    where: { 
+      isActive: true,
+      OR: [
+        { userId: null }, // Global contributions for all users
+        { userId: user.id } // User-specific contributions
+      ]
+    },
     select: { amount: true },
   });
   const totalContributions = contributions.reduce((sum, c) => sum + Number(c.amount), 0);

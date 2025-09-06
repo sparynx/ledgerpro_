@@ -441,7 +441,7 @@ export default function ReceiptUpload() {
                   id="amount"
                   value={formData.amount}
                   onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
-                  className="w-full px-3 py-2.5 sm:px-4 sm:py-3 border border-slate-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-semibold transition-colors duration-200 text-sm sm:text-base"
+                  className="w-full px-3 py-2.5 sm:px-4 sm:py-3 border text-gray-600 border-slate-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-semibold transition-colors duration-200 text-sm sm:text-base"
                   placeholder="Enter amount paid"
                   required
                 />
@@ -456,7 +456,7 @@ export default function ReceiptUpload() {
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                   rows={3}
-                  className="w-full px-3 py-2.5 sm:px-4 sm:py-3 border border-slate-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-medium transition-colors duration-200 text-sm sm:text-base resize-none"
+                  className="w-full px-3 py-2.5 sm:px-4 sm:py-3 border text-gray-700 border-slate-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-medium transition-colors duration-200 text-sm sm:text-base resize-none"
                   placeholder="Add any additional notes..."
                 />
               </div>

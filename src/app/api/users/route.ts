@@ -5,17 +5,49 @@ export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
     const stateCode = searchParams.get('stateCode');
+    const search = searchParams.get('search');
     const includeReceipts = searchParams.get('include') === 'receipts';
 
+    let whereClause: any = { isActive: true };
+
+    if (stateCode) {
+      whereClause.stateCode = {
+        contains: stateCode,
+        mode: 'insensitive',
+      };
+    }
+
+    if (search) {
+      whereClause.OR = [
+        {
+          displayName: {
+            contains: search,
+            mode: 'insensitive',
+          },
+        },
+        {
+          username: {
+            contains: search,
+            mode: 'insensitive',
+          },
+        },
+        {
+          email: {
+            contains: search,
+            mode: 'insensitive',
+          },
+        },
+        {
+          stateCode: {
+            contains: search,
+            mode: 'insensitive',
+          },
+        },
+      ];
+    }
+
     const users = await prisma.user.findMany({
-      where: stateCode
-        ? {
-            stateCode: {
-              contains: stateCode,
-              mode: 'insensitive',
-            },
-          }
-        : undefined,
+      where: whereClause,
       orderBy: { createdAt: 'desc' },
       select: {
         id: true,
