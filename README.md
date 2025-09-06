@@ -14,7 +14,6 @@
 - [Overview]
 - [Features]
 - [Tech Stack]
-- [Screenshots]
 - [Getting Started]
 - [Environment Setup]
 - [Database Setup]
@@ -103,17 +102,7 @@ CDS LedgerPro is a modern, full-stack financial management application designed 
 - Prisma Studio - Database management interface
 - Turbopack - Fast development builds
 
- 📸 Screenshots
-
- Admin Dashboard
-![Admin Dashboard](https://via.placeholder.com/800x400/1e40af/ffffff?text=Admin+Dashboard)
-
- Member Dashboard
-![Member Dashboard](https://via.placeholder.com/800x400/059669/ffffff?text=Member+Dashboard)
-
- Contribution Management
-![Contribution Management](https://via.placeholder.com/800x400/7c3aed/ffffff?text=Contribution+Management)
-
+ 
  🚀 Getting Started
 
  Prerequisites
