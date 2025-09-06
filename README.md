@@ -11,17 +11,17 @@
 
  📋 Table of Contents
 
-- [Overview](-overview)
-- [Features](-features)
-- [Tech Stack](-tech-stack)
-- [Screenshots](-screenshots)
-- [Getting Started](-getting-started)
-- [Environment Setup](-environment-setup)
-- [Database Setup](-database-setup)
-- [Deployment](-deployment)
-- [API Documentation](-api-documentation)
-- [Contributing](-contributing)
-- [License](-license)
+- [Overview]
+- [Features]
+- [Tech Stack]
+- [Screenshots]
+- [Getting Started]
+- [Environment Setup]
+- [Database Setup]
+- [Deployment]
+- [API Documentation]
+- [Contributing]
+- [License]
 
  🎯 Overview
 
